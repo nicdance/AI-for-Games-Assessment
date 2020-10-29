@@ -1,8 +1,14 @@
 #include "Agent.h"
 #include "Behaviour.h"
 #include <raylib.h>
+#include <glm.hpp>
 Agent::Agent()
 {}
+
+Agent::Agent(glm::vec2 pos)
+{
+	SetPosition(pos);
+}
 
 Agent::~Agent()
 {}

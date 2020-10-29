@@ -1,21 +1,4 @@
-﻿  Agent.cpp
-D:\GitHub\AI-for-Games-Assessment\RayLibC++\AnimalSim\Agent.cpp(32,40): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-D:\GitHub\AI-for-Games-Assessment\RayLibC++\AnimalSim\Agent.cpp(32,26): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-  KeyboardBehaviour.cpp
+﻿  KeyboardBehaviour.cpp
   main.cpp
   Generating Code...
-raylib.lib(core.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(core.obj)' or at 'D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\raylib.pdb'; linking object as if no debug info
-raylib.lib(rglfw.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(rglfw.obj)' or at 'D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\raylib.pdb'; linking object as if no debug info
-raylib.lib(shapes.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(shapes.obj)' or at 'D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\raylib.pdb'; linking object as if no debug info
-raylib.lib(text.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(text.obj)' or at 'D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\raylib.pdb'; linking object as if no debug info
-raylib.lib(textures.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(textures.obj)' or at 'D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\raylib.pdb'; linking object as if no debug info
-raylib.lib(utils.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(utils.obj)' or at 'D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\raylib.pdb'; linking object as if no debug info
   AnimalSim.vcxproj -> D:\GitHub\AI-for-Games-Assessment\RayLibC++\x64\Debug\AnimalSim.exe

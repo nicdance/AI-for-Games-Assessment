@@ -23,6 +23,7 @@
 #include <glm.hpp>
 #include "Agent.h"
 #include "KeyboardBehaviour.h"
+#include "SeekBehaviour.h"
 
 int main(int argc, char* argv[])
 {
@@ -39,6 +40,16 @@ int main(int argc, char* argv[])
     Agent* player = new Agent();
     KeyboardBehaviour* keyboardBehaviour = new KeyboardBehaviour();
     player->AddBehaviour(keyboardBehaviour);
+
+
+    glm::vec2 pos(100, 100);
+    Agent* seeker = new Agent(pos);
+    SeekBehaviour* seekBehaviour = new SeekBehaviour();
+    seekBehaviour->SetTarget(player);
+
+    seeker->AddBehaviour(seekBehaviour);
+
+
     float deltaTime = 0;
 
     // Main game loop
@@ -50,6 +61,7 @@ int main(int argc, char* argv[])
         //----------------------------------------------------------------------------------
         deltaTime = GetFrameTime();
         player->Update(deltaTime);
+        seeker->Update(deltaTime);
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -58,6 +70,7 @@ int main(int argc, char* argv[])
         ClearBackground(RAYWHITE);
 
         player->Draw();
+        seeker->Draw();
 
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 

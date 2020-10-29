@@ -9,6 +9,7 @@ class Agent
 {
 public:
 	Agent();
+	Agent(glm::vec2);
 	virtual ~Agent();
 	// Update the agent and its behaviours
 	virtual void Update(float deltaTime);
