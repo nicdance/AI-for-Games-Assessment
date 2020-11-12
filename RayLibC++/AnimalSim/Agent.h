@@ -2,13 +2,14 @@
 #include <vector>
 #include <memory>
 #include <glm.hpp>
+#include <raylib.h>
 
 class Behaviour;
 
 class Agent
 {
 public:
-	Agent();
+	Agent(Color c = RED);
 	Agent(glm::vec2);
 	virtual ~Agent();
 	// Update the agent and its behaviours
@@ -23,10 +24,13 @@ public:
 	void SetVelocity(glm::vec2  velocity);
 	const glm::vec2&  GetVelocity() const;
 	void AddForce(glm::vec2  force);
+	float max_speed = 100;
 
 protected:
 	std::vector<std::shared_ptr<Behaviour>> m_behaviourList;
 	glm::vec2 m_position = { 0, 0 };
 	glm::vec2  m_velocity = { 0, 0 };
 	glm::vec2  m_force = { 0, 0 };
+
+	Color m_color;
 };

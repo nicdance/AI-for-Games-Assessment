@@ -5,7 +5,7 @@ class KeyboardBehaviour :
 	public Behaviour
 {
 public:
-	KeyboardBehaviour();
+	KeyboardBehaviour(float s);
 	~KeyboardBehaviour();
 	virtual bool Update(Agent* agent, float deltaTime);
 private:

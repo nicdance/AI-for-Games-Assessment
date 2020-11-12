@@ -37,18 +37,22 @@ int main(int argc, char* argv[])
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
 
+    std::vector<Agent*> agents;
+
     Agent* player = new Agent();
-    KeyboardBehaviour* keyboardBehaviour = new KeyboardBehaviour();
-    player->AddBehaviour(keyboardBehaviour);
+    player->AddBehaviour(new KeyboardBehaviour(8000));
+    agents.push_back(player);
 
+    for (int ii = 0; ii < 30; ii++)
+    {
+        Agent* seeker = new Agent(BLACK);
+        seeker->AddBehaviour(new SeekBehaviour(player, 8000));
 
-    glm::vec2 pos(100, 100);
-    Agent* seeker = new Agent(pos);
-    SeekBehaviour* seekBehaviour = new SeekBehaviour();
-    seekBehaviour->SetTarget(player);
+        glm::vec2 pos(100+20*ii, 100);
+        seeker->SetPosition(pos);
 
-    seeker->AddBehaviour(seekBehaviour);
-
+        agents.push_back(seeker);
+    }
 
     float deltaTime = 0;
 
@@ -60,8 +64,10 @@ int main(int argc, char* argv[])
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
         deltaTime = GetFrameTime();
-        player->Update(deltaTime);
-        seeker->Update(deltaTime);
+
+        for (auto a:agents) {
+            a->Update(deltaTime);
+        }
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -69,8 +75,10 @@ int main(int argc, char* argv[])
 
         ClearBackground(RAYWHITE);
 
-        player->Draw();
-        seeker->Draw();
+
+        for (auto a : agents) {
+            a->Draw();
+        }
 
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
@@ -84,5 +92,9 @@ int main(int argc, char* argv[])
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
+
+    for (auto a : agents) {
+       delete a;
+    }
     return 0;
 }

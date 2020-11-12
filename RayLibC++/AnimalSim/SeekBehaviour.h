@@ -6,14 +6,14 @@ class SeekBehaviour :
 {
 	
 	public:
-		SeekBehaviour();
+		SeekBehaviour(const Agent* target, float speed);
 		~SeekBehaviour();
 		virtual bool Update(Agent* agent, float deltaTime);
 		void SetTarget(Agent* agent);
 	private:
 		float m_speedIncrement = 500.0f; 
-		Agent* m_target;
-		float seekSpeed = 20;
+		const Agent* m_target;
+		float m_speed = 20;
 
 };
 

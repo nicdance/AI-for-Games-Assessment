@@ -2,7 +2,7 @@
 #include "Behaviour.h"
 #include <raylib.h>
 #include <glm.hpp>
-Agent::Agent()
+Agent::Agent(Color c) : m_color{c}
 {}
 
 Agent::Agent(glm::vec2 pos)
@@ -29,13 +29,30 @@ void Agent::Update(float deltaTime)
 	}
 
 	m_velocity += m_force * deltaTime;
+
+	// Velocity
+	DrawLine(m_position.x, m_position.y,
+			 m_position.x+m_velocity.x, m_position.y+m_velocity.y,
+			 GREEN);
+
+	// Force
+	DrawLine(m_position.x, m_position.y,
+		m_position.x + m_force.x, m_position.y + m_force.y,
+		BLUE);
+
+	float magnitude = glm::length(m_velocity);
+	if (magnitude > max_speed)
+	{
+		m_velocity = glm::normalize(m_velocity)*max_speed;
+
+	}
 	m_position += m_velocity * deltaTime;
 }
 
 // Draw the agent
 void Agent::Draw()
 {
-	DrawRectangle(m_position.x, m_position.y, 10, 10, RED);
+	DrawRectangle(m_position.x, m_position.y, 10, 10, m_color);
 }
 // Add a behaviour to the agent
 void Agent::AddBehaviour(Behaviour* behaviour)
