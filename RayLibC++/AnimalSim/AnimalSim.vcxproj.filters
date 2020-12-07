@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Behaviour">
+      <UniqueIdentifier>{a9678355-c7af-477a-83f8-acb8f501f8d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Steering">
+      <UniqueIdentifier>{ab69ce06-3d4d-46c5-8ae9-b484f2faa480}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -30,18 +36,36 @@
     <ClCompile Include="SeekBehaviour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SteeringBehaviour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DijkstrasSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Agent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Behaviour.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="KeyboardBehaviour.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="SeekBehaviour.h">
+      <Filter>Header Files\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringBehaviour.h">
+      <Filter>Header Files\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringForce.h">
+      <Filter>Header Files\Steering</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekForce.h">
+      <Filter>Header Files\Steering</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

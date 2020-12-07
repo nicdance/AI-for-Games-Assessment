@@ -4,13 +4,13 @@
 #include <glm.hpp>
 #include <raylib.h>
 
+
 class Behaviour;
 
 class Agent
 {
 public:
-	Agent(Color c = RED);
-	Agent(glm::vec2);
+	Agent(Texture t);
 	virtual ~Agent();
 	// Update the agent and its behaviours
 	virtual void Update(float deltaTime);
@@ -24,7 +24,21 @@ public:
 	void SetVelocity(glm::vec2  velocity);
 	const glm::vec2&  GetVelocity() const;
 	void AddForce(glm::vec2  force);
+
 	float max_speed = 100;
+	float max_force;
+
+	//Animation
+	int initial_frame_x= 4;
+	int initial_frame_y =0;
+	float frames_per_second = 15;
+	int steps = 8;
+
+	// Screen
+
+// FIX THIS
+	int screenX = GetScreenWidth();
+	int screenY = GetScreenHeight();
 
 protected:
 	std::vector<std::shared_ptr<Behaviour>> m_behaviourList;
@@ -32,5 +46,5 @@ protected:
 	glm::vec2  m_velocity = { 0, 0 };
 	glm::vec2  m_force = { 0, 0 };
 
-	Color m_color;
+	Texture image;
 };
