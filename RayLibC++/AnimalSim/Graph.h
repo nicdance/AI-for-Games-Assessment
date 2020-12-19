@@ -8,11 +8,11 @@ struct Edge {
 };
 
 struct Node{
-	char name;
+	unsigned int id;
 	std::vector<Edge> outgoing_edges;
 	glm::vec2 position;
 
-	float gscore = 0; // Running cost to get to node.
+	float gscore =  0; // Running cost to get to node.
 	Node* parent = nullptr; 
 
 };

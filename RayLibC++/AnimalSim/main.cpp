@@ -26,7 +26,9 @@
 #include "KeyboardBehaviour.h"
 #include "SeekBehaviour.h"
 #include "SteeringBehaviour.h"
+#include "MapReader.h"
 #include "Graph.h"
+#include "MakeNodeGrid.h"
 
 using Path = std::list<Node*>;
 Path dijkstrasSearch(Node* startNode, Node* endNode);
@@ -56,22 +58,33 @@ void ResetGraph(Node* start, Node* end){
 
 int main(int argc, char* argv[])
 {
-    Node map[9];
+    auto mp = ReadMapInfo("maps/level1.map");
 
-    enum {A,B,C,D,E,F,G,H,I};
+    float terrain_difficulty[] = { 1, 2, 4, impassable };
 
-    map[A] = { 'A', { {&map[B],1}, {&map[F],2}, {&map[E],3} } };
-    map[B] = { 'B',{{&map[A],1}, {&map[C],1}} };
-    map[C] = { 'C',{{&map[B],1}, {&map[D],1}} };
-    map[D] = { 'D',{{&map[C],1}, {&map[I],2} , {&map[E],3} } };
-    map[E] = { 'E',{{&map[A],3}, {&map[D],3}, {&map[F],3}, {&map[I],13}  } };
-    map[F] = { 'F',{{&map[A],2}, {&map[E],3}, {&map[G],1} } };
-    map[G] = { 'G',{{&map[F],1}, {&map[H],1}} };
-    map[H] = { 'H',{{&map[G],1}, {&map[I],1}} };
-    map[I] = { 'I',{{&map[D],2}, {&map[E],3}, {&map[H],1} } };
-        
-    ResetGraph(&map[0], &map[8]);
-    auto path  =  dijkstrasSearch(&map[A], &map[D]);
+    auto graph = BuildNodeGraph(mp, terrain_difficulty);
+
+    ResetGraph(&graph.front(), &graph.back());
+
+    auto path = dijkstrasSearch(&graph[0], &graph[46]); 
+
+    BeginDrawing();
+
+    ClearBackground(RAYWHITE);
+
+    EndDrawing();
+
+    while (!WindowShouldClose()) {
+
+    }
+    CloseWindow();
+    
+    
+    
+    // **********    Up To 2:06
+
+ 
+
 
     /*
     // Initialization
