@@ -10,6 +10,7 @@ class Behaviour;
 class Agent
 {
 public:
+	Agent();
 	Agent(Texture t);
 	virtual ~Agent();
 	// Update the agent and its behaviours

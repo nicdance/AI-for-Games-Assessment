@@ -5,4 +5,4 @@
 
 const float impassable = -1;
 
-std::vector<Node> BuildNodeGraph(const MapObject& mo, float* terrain);
+std::vector<Node> BuildNodeGraph(const MapObject& mo, int tilesize, float* terrain);

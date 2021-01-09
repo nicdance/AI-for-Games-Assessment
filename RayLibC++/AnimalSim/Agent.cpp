@@ -4,6 +4,9 @@
 #include <glm.hpp>
 
 
+Agent::Agent()
+{}
+
 Agent::Agent(Texture t) : image{t}
 {}
 

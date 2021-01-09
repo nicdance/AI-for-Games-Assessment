@@ -17,7 +17,12 @@ struct MapObject {
 		{
 			for (int jj	 = 0; jj < y; ++jj)
 			{
-
+				int id = ii + jj * x;
+				int mapinfo = info[id];
+				Rectangle src = rectanglemap[mapinfo];
+				Rectangle dest {ii*tilesize, jj*tilesize, tilesize,tilesize};
+				Color color{ 255,255,255,255 };
+				DrawTexturePro(tile_atlas, src, dest, Vector2{ 0,0 }, 0, color);
 			}
 		}
 	}

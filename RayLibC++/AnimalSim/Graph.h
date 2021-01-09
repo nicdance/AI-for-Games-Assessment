@@ -1,7 +1,7 @@
 #pragma once
 #include <glm.hpp>
 #include <vector>
-
+#include <list>
 struct Edge {
 	struct Node* target;
 	float cost = 1;
@@ -17,5 +17,8 @@ struct Node{
 
 };
 
+
+
+using Path = std::list<Node*>;
 
 

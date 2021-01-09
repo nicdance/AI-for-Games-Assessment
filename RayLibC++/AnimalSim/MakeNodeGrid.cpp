@@ -1,8 +1,10 @@
 #include "MakeNodeGrid.h"
 
-std::vector<Node> BuildNodeGraph(const MapObject& mo, float* terrain) {
+std::vector<Node> BuildNodeGraph(const MapObject& mo, int tilesize, float* terrain) {
 	std::vector<Node> graph;
 	graph.resize(mo.info.size());
+
+
 
 	for (int id=0; id < mo.info.size(); ++id)
 	{
@@ -19,7 +21,20 @@ std::vector<Node> BuildNodeGraph(const MapObject& mo, float* terrain) {
 		int goUp    = mo.x;
 		int goDown  = -mo.x;
 
+
+		bool addUpLeft =	addLeft && addUp;
+		bool addUpRight =	addRight && addUp;
+		bool addDownRight = addDown && addRight;
+		bool addDownLeft =	addDown && addLeft;
+
+		int goUpLeft =		goLeft+goUp;
+		int goUpRight =		goUp+goRight;
+		int goDownLeft =	goDown+goLeft;
+		int goDownRight =	goDown+goRight;
+
+
 		graph[id].id = id;
+		graph[id].position = glm::vec2{ x * tilesize + tilesize / 2,y * tilesize + tilesize / 2 };
 
 		auto AddConnection = [&](bool canDirection, int offset, float distance= 1.0f) {
 			if (canDirection)
@@ -35,6 +50,12 @@ std::vector<Node> BuildNodeGraph(const MapObject& mo, float* terrain) {
 		AddConnection(addRight, goRight);
 		AddConnection(addUp, goUp);
 		AddConnection(addDown, goDown);
+
+
+		AddConnection(addUpLeft, goUpLeft);
+		AddConnection(addUpRight, goUpRight);
+		AddConnection(addDownRight, goDownRight);
+		AddConnection(addDownLeft, goDownLeft);
 
 
 		/*if (addLeft)

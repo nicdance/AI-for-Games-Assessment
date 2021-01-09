@@ -29,8 +29,7 @@
 #include "MapReader.h"
 #include "Graph.h"
 #include "MakeNodeGrid.h"
-
-using Path = std::list<Node*>;
+#include "PathFollowBehaviour.h"
 Path dijkstrasSearch(Node* startNode, Node* endNode);
 
 //class ManagedTexture {
@@ -56,25 +55,95 @@ void ResetGraph(Node* start, Node* end){
     }
 }
 
+void DrawPath(const Path& path) {
+    if (path.size()  < 2)
+    {
+        return;
+    }
+    for (auto j = path.begin(), i = std::next(j); i!=path.end(); ++i, ++j)
+    {
+        DrawLine(   (*i)->position.x, 
+                    (*i)->position.y, 
+                    (*j)->position.x, 
+                    (*j)->position.y, 
+                    Color{255,255,255,255});
+    }
+}
+
 int main(int argc, char* argv[])
 {
+
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    int screenWidth = 800;
+    int screenHeight = 450;
+    int ts = 32;
+
+    Agent me;
+    me.SetPosition({200,200});
+    me.AddBehaviour(new PathFollowBehaviour());
+
+    InitWindow(screenWidth, screenHeight, "AnimalSim");
+    SetTargetFPS(60);
+
     auto mp = ReadMapInfo("maps/level1.map");
+    mp.tile_atlas = LoadTexture("textures/forest_tiles.png");
+    mp.tilesize = ts;
+    Rectangle rectarray[] = {
+        {0,0,ts,ts},
+        {13*ts,7*ts,ts,ts},
+        {14*ts,7*ts,ts,ts},
+        {5*ts,8*ts,ts,ts}
+    };
+    mp.rectanglemap = rectarray;
 
     float terrain_difficulty[] = { 1, 2, 4, impassable };
 
-    auto graph = BuildNodeGraph(mp, terrain_difficulty);
+    auto graph = BuildNodeGraph(mp, ts,  terrain_difficulty);
 
     ResetGraph(&graph.front(), &graph.back());
 
-    auto path = dijkstrasSearch(&graph[0], &graph[46]); 
 
-    BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    int start = 0;
+    int end = 46;
+    auto path = dijkstrasSearch(&graph[start], &graph[end]);
 
-    EndDrawing();
+   
 
     while (!WindowShouldClose()) {
+        auto p = GetMousePosition();
+        p.x = (int)(p.x/ts);
+        p.y = (int)(p.y / ts);
+        bool moused = false;
+        int tileID = p.x + p.y * mp.x;
+        if (IsMouseButtonPressed(0))
+        {
+            start = tileID;
+            moused = true;
+        }
+
+        if (IsMouseButtonPressed(1))
+        {
+            end = tileID;
+            moused = true;
+        }
+
+        if (moused)
+        {
+            path = dijkstrasSearch(&graph[start], &graph[end]);
+        }
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+        mp.Draw();
+
+        DrawPath(path);
+
+
+        DrawRectangleLines(p.x * ts, p.y * ts, ts, ts, Color{54,255,128,255});
+
+        EndDrawing();
 
     }
     CloseWindow();
@@ -87,14 +156,6 @@ int main(int argc, char* argv[])
 
 
     /*
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    int screenWidth = 800;
-    int screenHeight = 450;
-
-    InitWindow(screenWidth, screenHeight, "AnimalSim");
-
-    SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
 
     std::vector<Agent*> agents;
