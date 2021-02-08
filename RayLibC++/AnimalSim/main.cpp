@@ -1,4 +1,6 @@
 /*******************************************************************************************
+
+UP TO SESSION 6 1:19:48 
 *
 *   raylib [core] example - Basic window
 *
@@ -73,18 +75,27 @@ void DrawPath(const Path& path) {
 int main(int argc, char* argv[])
 {
 
+
     // Initialization
     //--------------------------------------------------------------------------------------
     int screenWidth = 800;
     int screenHeight = 450;
     int ts = 32;
 
-    Agent me;
-    me.SetPosition({200,200});
-    me.AddBehaviour(new PathFollowBehaviour());
-
     InitWindow(screenWidth, screenHeight, "AnimalSim");
     SetTargetFPS(60);
+
+    
+   //Texture bugs = LoadTexture("textures/bugs.png");
+
+    Agent* agent = new Agent();
+    agent->SetPosition({200,200});
+    auto follow_path = new PathFollowBehaviour(20);
+    agent->AddBehaviour(follow_path);
+
+    Path path;
+//    std::vector<std::shared_ptr<Agent>> agents;
+
 
     auto mp = ReadMapInfo("maps/level1.map");
     mp.tile_atlas = LoadTexture("textures/forest_tiles.png");
@@ -105,43 +116,57 @@ int main(int argc, char* argv[])
 
 
 
-    int start = 0;
-    int end = 46;
-    auto path = dijkstrasSearch(&graph[start], &graph[end]);
+    //int start = 0;
+    //int end = 46;
+    //auto path = dijkstrasSearch(&graph[start], &graph[end]);
 
    
 
     while (!WindowShouldClose()) {
         auto p = GetMousePosition();
-        p.x = (int)(p.x/ts);
-        p.y = (int)(p.y / ts);
-        bool moused = false;
-        int tileID = p.x + p.y * mp.x;
+      // // p.x = (int)(p.x/ts);
+       // p.y = (int)(p.y / ts);
+      //  int tileID = p.x + p.y * mp.x;
+        int tileID = mp.GetPositionID(p.x, p.y);
+
+        Vector2 mouse_int{ ((int)p.x/ts)*ts, ((int)p.y/ts)*ts };
         if (IsMouseButtonPressed(0))
         {
-            start = tileID;
-            moused = true;
+            auto end = tileID;
+
+            ResetGraph(&graph[0], &graph[graph.size() - 1]);
+
+            auto agent_Tile = mp.GetPositionID(agent->GetPosition().x, agent->GetPosition().y);
+            path = dijkstrasSearch(&graph[agent_Tile], &graph[end]);
+            follow_path->SetPath(path);
         }
 
-        if (IsMouseButtonPressed(1))
+        /*if (IsMouseButtonPressed(1))
         {
             end = tileID;
             moused = true;
-        }
+        }*/
 
-        if (moused)
+        /*if (moused)
         {
+            ResetGraph(&graph[0], &graph[graph.size()-1]);
             path = dijkstrasSearch(&graph[start], &graph[end]);
-        }
+            follow_path->SetPath(path);
+        }*/
+
+        // update Agents
+        agent->Update(GetFrameTime());
+
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
         mp.Draw();
-
         DrawPath(path);
 
+        agent->Draw();
 
-        DrawRectangleLines(p.x * ts, p.y * ts, ts, ts, Color{54,255,128,255});
+
+        DrawRectangleLines(mouse_int.x, mouse_int.y, ts, ts, Color{54,255,128,255});
 
         EndDrawing();
 

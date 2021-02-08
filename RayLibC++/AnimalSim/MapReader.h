@@ -12,6 +12,12 @@ struct MapObject {
 	Rectangle* rectanglemap;
 	int tilesize;
 
+	unsigned int GetPositionID(float x_, float y_) const {
+		const int tileX = x_ / tilesize;
+		const int tileY = y_ / tilesize;
+		return tileX + tileY * x;
+	}
+
 	void Draw() {
 		for (int ii = 0; ii < x; ++ii)
 		{

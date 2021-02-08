@@ -5,13 +5,18 @@
 
 
 Agent::Agent()
-{}
+{
+	image = LoadTexture("textures/bugs.png");
+}
 
 Agent::Agent(Texture t) : image{t}
-{}
+{
+}
 
 Agent::~Agent()
-{}
+{
+	UnloadTexture(image);
+}
 
 // Update the agent and its behaviours
 void Agent::Update(float deltaTime)
@@ -81,7 +86,14 @@ void Agent::Draw()
 							width, height };
 
 	float angle = atan2(m_velocity.y, m_velocity.x)*180/3.141459f+90;
-	DrawTexturePro(image, source, destination, { width/2, height/3 }, angle, WHITE);
+
+	DrawTexturePro(
+		image, 
+		source, 
+		destination, 
+		{ width/2, height/2 }, // Maybe 3 
+		angle, 
+		WHITE);
 }
 // Add a behaviour to the agent
 void Agent::AddBehaviour(Behaviour* behaviour)
