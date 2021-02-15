@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
 
     // Initialization
     //--------------------------------------------------------------------------------------
-    int screenWidth = 800;
-    int screenHeight = 450;
+    int screenWidth = 960;
+    int screenHeight = 640;
     int ts = 32;
 
     InitWindow(screenWidth, screenHeight, "AnimalSim");
@@ -90,14 +90,14 @@ int main(int argc, char* argv[])
 
     Agent* agent = new Agent();
     agent->SetPosition({200,200});
-    auto follow_path = new PathFollowBehaviour(20);
+    auto follow_path = new PathFollowBehaviour(80);
     agent->AddBehaviour(follow_path);
 
     Path path;
 //    std::vector<std::shared_ptr<Agent>> agents;
 
 
-    auto mp = ReadMapInfo("maps/level1.map");
+    auto mp = ReadMapInfo("maps/zone.map");
     mp.tile_atlas = LoadTexture("textures/forest_tiles.png");
     mp.tilesize = ts;
     Rectangle rectarray[] = {
@@ -122,10 +122,10 @@ int main(int argc, char* argv[])
 
    // Apple List 
     std::list<glm::vec2> apples{
-        {300,300},
-        {180,20},
-        {30,50},
-        {160,100},
+        {288,288},
+        {160,32},
+        {32,64},
+        {160,96},
     };
 
     while (!WindowShouldClose()) {
@@ -191,14 +191,14 @@ int main(int argc, char* argv[])
         agent->Draw();
 
         //draw Apples;
-        for (auto a: apples)
+        for (auto a : apples)
         {
             DrawTexturePro(mp.tile_atlas,
                 { (float)mp.tilesize * 11, (float)mp.tilesize * 6,(float)mp.tilesize, (float)mp.tilesize },
                 { a.x, a.y,  (float)mp.tilesize, (float)mp.tilesize },
-                Vector2{ 0,0 }, 0,
+                Vector2{0,0}, 0,
                 Color{ 255,255,255,255 });
-
+            // (float)mp.tilesize/2, (float)mp.tilesize/2
         }
         // Drawing line hover outline
         DrawRectangleLines(mouse_int.x, mouse_int.y, ts, ts, Color{54,255,128,255});
