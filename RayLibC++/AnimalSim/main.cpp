@@ -32,7 +32,7 @@ UP TO SESSION 6 1:19:48
 #include "Graph.h"
 #include "MakeNodeGrid.h"
 #include "PathFollowBehaviour.h"
-Path dijkstrasSearch(Node* startNode, Node* endNode);
+#include "DijkstrasSearch.h"
 
 //class ManagedTexture {
 //private:
@@ -120,7 +120,13 @@ int main(int argc, char* argv[])
     //int end = 46;
     //auto path = dijkstrasSearch(&graph[start], &graph[end]);
 
-   
+   // Apple List 
+    std::list<glm::vec2> apples{
+        {300,300},
+        {180,20},
+        {30,50},
+        {160,100},
+    };
 
     while (!WindowShouldClose()) {
         auto p = GetMousePosition();
@@ -141,6 +147,21 @@ int main(int argc, char* argv[])
             follow_path->SetPath(path);
         }
 
+        if (IsKeyPressed(32))
+        {
+            auto agent_Tile = mp.GetPositionID(agent->GetPosition().x, agent->GetPosition().y);
+            auto findApple = [&](const Node* n)->bool {
+                for (auto a : apples) {
+                    if (mp.GetPositionID(a.x, a.y) == n->id) {
+                        return  true;
+                    }
+                }
+                return false;
+            };
+
+            path = dijkstrasSearch(&graph[agent_Tile], findApple);
+            follow_path->SetPath(path);
+        }
         /*if (IsMouseButtonPressed(1))
         {
             end = tileID;
@@ -160,12 +181,26 @@ int main(int argc, char* argv[])
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
+        // Draw Map
         mp.Draw();
+
+        //Draw Path
         DrawPath(path);
 
+        // Draw Agents
         agent->Draw();
 
+        //draw Apples;
+        for (auto a: apples)
+        {
+            DrawTexturePro(mp.tile_atlas,
+                { (float)mp.tilesize * 11, (float)mp.tilesize * 6,(float)mp.tilesize, (float)mp.tilesize },
+                { a.x, a.y,  (float)mp.tilesize, (float)mp.tilesize },
+                Vector2{ 0,0 }, 0,
+                Color{ 255,255,255,255 });
 
+        }
+        // Drawing line hover outline
         DrawRectangleLines(mouse_int.x, mouse_int.y, ts, ts, Color{54,255,128,255});
 
         EndDrawing();
