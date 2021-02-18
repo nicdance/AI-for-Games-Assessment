@@ -2,13 +2,13 @@
 #include "Agent.h"
 #include <glm.hpp>
 
-SeekBehaviour::SeekBehaviour(const Agent* target, float speed) 
-	:Behaviour(),
+SeekBehaviour::SeekBehaviour(std::shared_ptr<Agent> target, float speed):Behaviour(),
 	m_speed{ speed },
 	m_target{ target } {}
 
 SeekBehaviour::~SeekBehaviour() {};
 
+//bool SeekBehaviour::Update(std::shared_ptr<Agent> agent, float deltaTime) {
 bool SeekBehaviour::Update(Agent* agent, float deltaTime) {
 	glm::vec2 force(0, 0);
 
@@ -28,6 +28,6 @@ bool SeekBehaviour::Update(Agent* agent, float deltaTime) {
 }
 
 
-void SeekBehaviour::SetTarget(Agent* agent) { 
+void SeekBehaviour::SetTarget(std::shared_ptr<Agent> agent) {
 	m_target = agent; 
 }

@@ -10,6 +10,7 @@ public:
 	SteeringBehaviour(SteeringForce* f) : Behaviour {}, force{ f }{}
 
 	// Inherited From Behaviour
+	//virtual bool Update(std::shared_ptr<Agent> agent, float deltaTime) override {
 	virtual bool Update(Agent* agent, float deltaTime) override {
 		agent->AddForce(force->GetForce(agent));
 		return true;

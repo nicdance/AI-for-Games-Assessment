@@ -8,6 +8,7 @@ void PathFollowBehaviour::SetPath(const Path& path) {
 	current_path.insert(current_path.begin(), path.begin(), path.end());
 }
 
+//bool PathFollowBehaviour::Update(std::shared_ptr<Agent> agent, float deltaTime)
 bool PathFollowBehaviour::Update(Agent* agent, float deltaTime)
 {
 	// If at end then stop.

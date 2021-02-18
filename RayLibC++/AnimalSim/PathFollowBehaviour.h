@@ -13,7 +13,8 @@ class PathFollowBehaviour : public Behaviour {
 		void SetPath(const Path& path);
 
 		// Inherited via Behaviour
-		virtual bool Update(Agent* agent, float deltaTime) override;
+		//virtual bool Update(std::shared_ptr<Agent> agent, float deltaTime) override;
+		virtual bool Update(Agent*agent, float deltaTime) override;
 
 		/*private:
 		float m_speed;

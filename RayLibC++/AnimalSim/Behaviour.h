@@ -9,4 +9,5 @@ public:
 	virtual ~Behaviour() {}
 	// pure virtual function for executing the behaviour
 	virtual bool Update(Agent* agent, float deltaTime) = 0;
+	//virtual bool Update(std::shared_ptr<Agent> agent, float deltaTime) = 0;
 };

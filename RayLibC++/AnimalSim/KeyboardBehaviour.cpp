@@ -6,6 +6,7 @@
 KeyboardBehaviour::KeyboardBehaviour(float s) : Behaviour(), m_speedIncrement{ s } {};
 KeyboardBehaviour::~KeyboardBehaviour() {};
 
+//bool KeyboardBehaviour::Update(std::shared_ptr<Agent> agent, float deltaTime)
 bool KeyboardBehaviour::Update(Agent* agent, float deltaTime)
 {
 	glm::vec2 offset = { 0, 0 };

@@ -6,13 +6,14 @@ class SeekBehaviour :
 {
 	
 	public:
-		SeekBehaviour(const Agent* target, float speed);
+		SeekBehaviour(std::shared_ptr<Agent> target, float speed);
 		~SeekBehaviour();
+		//virtual bool Update(std::shared_ptr<Agent> agent, float deltaTime);
 		virtual bool Update(Agent* agent, float deltaTime);
-		void SetTarget(Agent* agent);
-	private:
+		void SetTarget(std::shared_ptr<Agent> agent);
+	protected:
 		float m_speedIncrement = 500.0f; 
-		const Agent* m_target;
+		std::shared_ptr<Agent> m_target;
 		float m_speed = 20;
 
 };

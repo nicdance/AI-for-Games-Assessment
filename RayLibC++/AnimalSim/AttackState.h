@@ -5,11 +5,12 @@
 
 class AttackState : public State {
 public:
-	virtual ~AttackState();
+	virtual ~AttackState() {}
 	AttackState(std::shared_ptr<Agent> t, float s) : target{ t }, speed{ s }{};
 
 	// Inherited via State
-	virtual void update(Agent* chaser, float deltaTime) override {
+	// void update(std::shared_ptr<Agent> chaser, float deltaTime) override {
+	void update(Agent* chaser, float deltaTime) override {
 		chaser->SetVelocity(glm::normalize(target->GetPosition() - chaser->GetPosition()) * speed);
 
 	}

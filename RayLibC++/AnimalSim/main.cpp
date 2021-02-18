@@ -139,10 +139,11 @@ int main(int argc, char* argv[])
 
     while (!WindowShouldClose()) {
         // Run Updates
-        for (auto a : agents) {
+       /* for (auto a : agents) {
             a->Update(GetFrameTime());
-        }
-
+        }*/
+        bug.get()->Update(GetFrameTime());
+        player.get()->Update(GetFrameTime());
         // Draw To Screen
         BeginDrawing();
 
@@ -152,9 +153,23 @@ int main(int argc, char* argv[])
 
 
         // Run Agent Draws
-        for (auto a : agents) {
-            a->Draw();
-        }
+        //for (auto a : agents) {
+        //    a.get()->Draw();
+        //}
+      
+
+      /*  for (std::vector< std::shared_ptr<Agent>>::iterator it = agents.begin(); it != agents.end(); ++it) {
+        }*/
+
+ //       for (
+ //           std::vector< std::shared_ptr<Agent>>::iterator it = agents.begin(); it != letters.end(); ++it) {
+ //     // here I don't know how to compare ?
+ //if (*it == letters) {
+ //it = letters.erase(it);
+
+ //   }
+
+ //       }
 
         EndDrawing();
     }

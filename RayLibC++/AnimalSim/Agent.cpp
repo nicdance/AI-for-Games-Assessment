@@ -28,10 +28,11 @@ void Agent::Update(float deltaTime)
 	// Add Velocity multiplied by delta time to Position
 	m_force = { 0, 0 };
 
-	std::shared_ptr<Agent> thisAgent(this);
+	//std::shared_ptr<Agent> thisAgent(this);
 
 	for (auto& b : m_behaviourList) {
 		// The force calculated by the behaviour’s update will be added to m_force
+		//b->Update(thisAgent, deltaTime);
 		b->Update(this, deltaTime);
 	}
 
