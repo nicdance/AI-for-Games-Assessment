@@ -1,6 +1,6 @@
 /*******************************************************************************************
 
-UP TO SESSION 6 1:19:48 
+UP TO SESSION 7
 *
 *   raylib [core] example - Basic window
 *
@@ -24,6 +24,7 @@ UP TO SESSION 6 1:19:48
 #include <raylib.h>
 #include <list>
 #include <glm.hpp>
+#include <memory>>
 #include "Agent.h"
 #include "KeyboardBehaviour.h"
 #include "SeekBehaviour.h"
@@ -33,6 +34,9 @@ UP TO SESSION 6 1:19:48
 #include "MakeNodeGrid.h"
 #include "PathFollowBehaviour.h"
 #include "DijkstrasSearch.h"
+#include "FSM.h"
+#include "AttackState.h"
+#include "IdleState.h"
 
 //class ManagedTexture {
 //private:
@@ -84,129 +88,197 @@ int main(int argc, char* argv[])
 
     InitWindow(screenWidth, screenHeight, "AnimalSim");
     SetTargetFPS(60);
+    std::vector<std::shared_ptr<Agent>> agents;
 
+    Texture bugs = LoadTexture("textures/bugs.png");
+
+
+    auto player = std::shared_ptr<Agent>(new Agent{ bugs });
+    player->AddBehaviour(new KeyboardBehaviour(8000));
+    glm::vec2 posA(250, 250);
+    player->SetPosition(posA);
+    player->max_speed = 400;
+
+    agents.push_back(player);
+
+
+    auto bug = std::shared_ptr<Agent>(new Agent{ bugs });
+    bug->initial_frame_y = 0 % 7 % 2 + 2;
+    bug->SetPosition(glm::vec2{300, 100});
     
-   //Texture bugs = LoadTexture("textures/bugs.png");
+    FSM* chaserStateMachine = new FSM();
+    auto attackState = new AttackState(player, 30);
+    auto idleState = new IdleState();
 
-    Agent* agent = new Agent();
-    agent->SetPosition({200,200});
-    auto follow_path = new PathFollowBehaviour(80);
-    agent->AddBehaviour(follow_path);
+    auto withinRange = new WithinRangeCondition(player, 200);
 
-    Path path;
-//    std::vector<std::shared_ptr<Agent>> agents;
+    bug->AddBehaviour(chaserStateMachine);
+    
+    agents.push_back(bug);
 
 
+
+    // Setup Map
     auto mp = ReadMapInfo("maps/zone.map");
     mp.tile_atlas = LoadTexture("textures/forest_tiles.png");
     mp.tilesize = ts;
     Rectangle rectarray[] = {
         {0,0,ts,ts},
-        {13*ts,7*ts,ts,ts},
-        {14*ts,7*ts,ts,ts},
-        {5*ts,8*ts,ts,ts}
+        {13 * ts,7 * ts,ts,ts},
+        {14 * ts,7 * ts,ts,ts},
+        {5 * ts,8 * ts,ts,ts}
     };
     mp.rectanglemap = rectarray;
 
     float terrain_difficulty[] = { 1, 2, 4, impassable };
 
-    auto graph = BuildNodeGraph(mp, ts,  terrain_difficulty);
+    auto graph = BuildNodeGraph(mp, ts, terrain_difficulty);
 
     ResetGraph(&graph.front(), &graph.back());
 
 
-
-    //int start = 0;
-    //int end = 46;
-    //auto path = dijkstrasSearch(&graph[start], &graph[end]);
-
-   // Apple List 
-    std::list<glm::vec2> apples{
-        {288,288},
-        {160,32},
-        {32,64},
-        {160,96},
-    };
-
     while (!WindowShouldClose()) {
-        auto p = GetMousePosition();
-      // // p.x = (int)(p.x/ts);
-       // p.y = (int)(p.y / ts);
-      //  int tileID = p.x + p.y * mp.x;
-        int tileID = mp.GetPositionID(p.x, p.y);
-
-        Vector2 mouse_int{ ((int)p.x/ts)*ts, ((int)p.y/ts)*ts };
-        if (IsMouseButtonPressed(0))
-        {
-            auto end = tileID;
-
-            ResetGraph(&graph[0], &graph[graph.size() - 1]);
-
-            auto agent_Tile = mp.GetPositionID(agent->GetPosition().x, agent->GetPosition().y);
-            path = dijkstrasSearch(&graph[agent_Tile], &graph[end]);
-            follow_path->SetPath(path);
+        // Run Updates
+        for (auto a : agents) {
+            a->Update(GetFrameTime());
         }
 
-        if (IsKeyPressed(32))
-        {
-            auto agent_Tile = mp.GetPositionID(agent->GetPosition().x, agent->GetPosition().y);
-            auto findApple = [&](const Node* n)->bool {
-                for (auto a : apples) {
-                    if (mp.GetPositionID(a.x, a.y) == n->id) {
-                        return  true;
-                    }
-                }
-                return false;
-            };
-
-            path = dijkstrasSearch(&graph[agent_Tile], findApple);
-            follow_path->SetPath(path);
-        }
-        /*if (IsMouseButtonPressed(1))
-        {
-            end = tileID;
-            moused = true;
-        }*/
-
-        /*if (moused)
-        {
-            ResetGraph(&graph[0], &graph[graph.size()-1]);
-            path = dijkstrasSearch(&graph[start], &graph[end]);
-            follow_path->SetPath(path);
-        }*/
-
-        // update Agents
-        agent->Update(GetFrameTime());
-
+        // Draw To Screen
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
         // Draw Map
         mp.Draw();
 
-        //Draw Path
-        DrawPath(path);
 
-        // Draw Agents
-        agent->Draw();
-
-        //draw Apples;
-        for (auto a : apples)
-        {
-            DrawTexturePro(mp.tile_atlas,
-                { (float)mp.tilesize * 11, (float)mp.tilesize * 6,(float)mp.tilesize, (float)mp.tilesize },
-                { a.x, a.y,  (float)mp.tilesize, (float)mp.tilesize },
-                Vector2{0,0}, 0,
-                Color{ 255,255,255,255 });
-            // (float)mp.tilesize/2, (float)mp.tilesize/2
+        // Run Agent Draws
+        for (auto a : agents) {
+            a->Draw();
         }
-        // Drawing line hover outline
-        DrawRectangleLines(mouse_int.x, mouse_int.y, ts, ts, Color{54,255,128,255});
 
         EndDrawing();
-
     }
-    CloseWindow();
+//
+//    Agent* agent = new Agent();
+//    agent->SetPosition({200,200});
+//    auto follow_path = new PathFollowBehaviour(80);
+//    agent->AddBehaviour(follow_path);
+//
+//    Path path;
+////    std::vector<std::shared_ptr<Agent>> agents;
+//
+//
+//    auto mp = ReadMapInfo("maps/zone.map");
+//    mp.tile_atlas = LoadTexture("textures/forest_tiles.png");
+//    mp.tilesize = ts;
+//    Rectangle rectarray[] = {
+//        {0,0,ts,ts},
+//        {13*ts,7*ts,ts,ts},
+//        {14*ts,7*ts,ts,ts},
+//        {5*ts,8*ts,ts,ts}
+//    };
+//    mp.rectanglemap = rectarray;
+//
+//    float terrain_difficulty[] = { 1, 2, 4, impassable };
+//
+//    auto graph = BuildNodeGraph(mp, ts,  terrain_difficulty);
+//
+//    ResetGraph(&graph.front(), &graph.back());
+//
+//
+//
+//    //int start = 0;
+//    //int end = 46;
+//    //auto path = dijkstrasSearch(&graph[start], &graph[end]);
+//
+//   // Apple List 
+//    std::list<glm::vec2> apples{
+//        {288,288},
+//        {160,32},
+//        {32,64},
+//        {160,96},
+//    };
+//
+//    while (!WindowShouldClose()) {
+//        
+//        auto p = GetMousePosition();
+//      // // p.x = (int)(p.x/ts);
+//       // p.y = (int)(p.y / ts);
+//      //  int tileID = p.x + p.y * mp.x;
+//        int tileID = mp.GetPositionID(p.x, p.y);
+//
+//        Vector2 mouse_int{ ((int)p.x/ts)*ts, ((int)p.y/ts)*ts };
+//        if (IsMouseButtonPressed(0))
+//        {
+//            auto end = tileID;
+//
+//            ResetGraph(&graph[0], &graph[graph.size() - 1]);
+//
+//            auto agent_Tile = mp.GetPositionID(agent->GetPosition().x, agent->GetPosition().y);
+//            path = dijkstrasSearch(&graph[agent_Tile], &graph[end]);
+//            follow_path->SetPath(path);
+//        }
+//
+//        if (IsKeyPressed(32))
+//        {
+//            auto agent_Tile = mp.GetPositionID(agent->GetPosition().x, agent->GetPosition().y);
+//            auto findApple = [&](const Node* n)->bool {
+//                for (auto a : apples) {
+//                    if (mp.GetPositionID(a.x, a.y) == n->id) {
+//                        return  true;
+//                    }
+//                }
+//                return false;
+//            };
+//
+//            path = dijkstrasSearch(&graph[agent_Tile], findApple);
+//            follow_path->SetPath(path);
+//        }
+//        /*if (IsMouseButtonPressed(1))
+//        {
+//            end = tileID;
+//            moused = true;
+//        }*/
+//
+//        /*if (moused)
+//        {
+//            ResetGraph(&graph[0], &graph[graph.size()-1]);
+//            path = dijkstrasSearch(&graph[start], &graph[end]);
+//            follow_path->SetPath(path);
+//        }*/
+//
+//        // update Agents
+//        agent->Update(GetFrameTime());
+//
+//        BeginDrawing();
+//
+//        ClearBackground(RAYWHITE);
+//        // Draw Map
+//        mp.Draw();
+//
+//        //Draw Path
+//        DrawPath(path);
+//
+//        // Draw Agents
+//        agent->Draw();
+//
+//        //draw Apples;
+//        for (auto a : apples)
+//        {
+//            DrawTexturePro(mp.tile_atlas,
+//                { (float)mp.tilesize * 11, (float)mp.tilesize * 6,(float)mp.tilesize, (float)mp.tilesize },
+//                { a.x, a.y,  (float)mp.tilesize, (float)mp.tilesize },
+//                Vector2{0,0}, 0,
+//                Color{ 255,255,255,255 });
+//            // (float)mp.tilesize/2, (float)mp.tilesize/2
+//        }
+//        // Drawing line hover outline
+//        DrawRectangleLines(mouse_int.x, mouse_int.y, ts, ts, Color{54,255,128,255});
+//
+//        EndDrawing();
+//
+//    }
+//    CloseWindow();
     
     
     
