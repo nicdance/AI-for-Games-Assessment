@@ -1,6 +1,5 @@
 #include "FSM.h"
 
-
 //bool FSM::Update(std::shared_ptr<Agent> agent, float deltaTime) {
 bool FSM::Update(Agent* agent, float deltaTime) {
 	if (!current_state) {

@@ -10,8 +10,8 @@ public:
 	FSM() : current_state{ nullptr } {}
 
 	std::shared_ptr < Transition> AddTransition(std::shared_ptr <Transition> t) { transitions.push_back(t); return t; };
-	std::shared_ptr < Condition> AddTransition(std::shared_ptr < Condition> c) { conditions.push_back(c); return c; };
-	std::shared_ptr < State> AddTransition(std::shared_ptr < State> s) { states.push_back(s); return s; };
+	std::shared_ptr < Condition> AddCondition(std::shared_ptr < Condition> c) { conditions.push_back(c); return c; };
+	std::shared_ptr < State> AddState(std::shared_ptr < State> s) { states.push_back(s); return s; };
 
 	void SetCurrentState(State* state) { current_state = state; }
 

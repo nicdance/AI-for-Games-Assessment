@@ -1,6 +1,10 @@
 /*******************************************************************************************
+Might need to look at passing references to the different types of agents and the map to the states
+OR maybe pass it toi the state machine and then it can call a get target passing it in then the state can work out the relevant target
+Look at creating GameObject Class
+Look into pooling for animals
 
-UP TO SESSION 7
+
 *
 *   raylib [core] example - Basic window
 *
@@ -24,7 +28,7 @@ UP TO SESSION 7
 #include <raylib.h>
 #include <list>
 #include <glm.hpp>
-#include <memory>>
+#include <memory>
 #include "Agent.h"
 #include "KeyboardBehaviour.h"
 #include "SeekBehaviour.h"
@@ -37,6 +41,8 @@ UP TO SESSION 7
 #include "FSM.h"
 #include "AttackState.h"
 #include "IdleState.h"
+#include "Transition.h"
+#include <iostream>
 
 //class ManagedTexture {
 //private:
@@ -101,17 +107,33 @@ int main(int argc, char* argv[])
 
     agents.push_back(player);
 
-
     auto bug = std::shared_ptr<Agent>(new Agent{ bugs });
     bug->initial_frame_y = 0 % 7 % 2 + 2;
-    bug->SetPosition(glm::vec2{300, 100});
+    bug->SetPosition(glm::vec2{600, 100});
     
     FSM* chaserStateMachine = new FSM();
-    auto attackState = new AttackState(player, 30);
-    auto idleState = new IdleState();
+    auto attackState = std::shared_ptr <AttackState>(new AttackState(player, 30));
+    auto idleState = std::shared_ptr <IdleState>( new IdleState());
 
-    auto withinRange = new WithinRangeCondition(player, 200);
+    auto withinRange = std::shared_ptr <WithinRangeCondition>(new WithinRangeCondition(player, 200));
+    auto idleToAttack = std::shared_ptr <Transition>( new Transition(attackState.get(), withinRange.get()));
+    idleState.get()->AddTransition(idleToAttack);
 
+
+    auto outOfRange = std::shared_ptr <OutOfRangeCondition>(new OutOfRangeCondition(player, 200));
+    auto attackToIdle = std::shared_ptr <Transition>(new Transition(idleState.get(), outOfRange.get()));
+    attackState.get()->AddTransition(attackToIdle);
+        
+
+    chaserStateMachine->AddTransition(idleToAttack);
+    chaserStateMachine->AddTransition(attackToIdle);
+    chaserStateMachine->AddState(attackState);
+    chaserStateMachine->AddState(idleState);
+    chaserStateMachine->AddCondition(withinRange);
+    chaserStateMachine->AddCondition(outOfRange);
+    
+    chaserStateMachine->SetCurrentState(idleState.get());
+    
     bug->AddBehaviour(chaserStateMachine);
     
     agents.push_back(bug);
@@ -139,11 +161,10 @@ int main(int argc, char* argv[])
 
     while (!WindowShouldClose()) {
         // Run Updates
-       /* for (auto a : agents) {
-            a->Update(GetFrameTime());
-        }*/
-        bug.get()->Update(GetFrameTime());
-        player.get()->Update(GetFrameTime());
+        for (auto a : agents) {
+            a.get()->Update(GetFrameTime());
+        }
+
         // Draw To Screen
         BeginDrawing();
 
@@ -153,24 +174,10 @@ int main(int argc, char* argv[])
 
 
         // Run Agent Draws
-        //for (auto a : agents) {
-        //    a.get()->Draw();
-        //}
-      
-
-      /*  for (std::vector< std::shared_ptr<Agent>>::iterator it = agents.begin(); it != agents.end(); ++it) {
-        }*/
-
- //       for (
- //           std::vector< std::shared_ptr<Agent>>::iterator it = agents.begin(); it != letters.end(); ++it) {
- //     // here I don't know how to compare ?
- //if (*it == letters) {
- //it = letters.erase(it);
-
- //   }
-
- //       }
-
+        for (auto a : agents) {
+            a.get()->Draw();
+        }
+        
         EndDrawing();
     }
 //
